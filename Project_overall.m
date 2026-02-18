@@ -1,11 +1,11 @@
 %% 
 % Step1: Load NIfTI data
-data = niftiread('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/bold.nii');
+data = niftiread('path_data');
 [num_x, num_y, num_z, num_time_points] = size(data);
 fmri_data = reshape(data, [], num_time_points)'; % Time points x Voxels
 
 % Load labels file
-labels_file = '/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/labels.txt';
+labels_file = 'path_labels';
 labels_data = readtable(labels_file, 'Delimiter', ' ', 'ReadVariableNames', false);
 stimuli_conditions = labels_data.Var1;
 condition_mapping = {'rest', 'scissors', 'face', 'cat', 'shoe', 'house', 'scrambledpix', 'bottle', 'chair'};
@@ -43,7 +43,7 @@ xtickangle(45);
 
 %% 
 % Step3: Get spatial and temporal resolution
-nii_info = niftiinfo('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/bold.nii');
+nii_info = niftiinfo('path_nii');
 voxel_size = nii_info.PixelDimensions;
 TR = nii_info.raw.pixdim(5);
 fprintf('Voxel size: %.2f x %.2f x %.2f mm\n', voxel_size);
@@ -57,7 +57,7 @@ rest_idx = find(strcmp(unique_conditions, 'rest'));
 design_matrix_no_rest = design_matrix(:, setdiff(1:size(design_matrix,2), rest_idx));
 
 % Load pre-defined HRF from file
-hrf_data = load('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/hrf.mat');
+hrf_data = load('path_hrf');
 disp('Available fields in hrf_data:');
 disp(fieldnames(hrf_data));
 hrf = hrf_data.hrf_sampled;
@@ -204,9 +204,9 @@ fmri_data = double(fmri_data);
 fmri_data = zscore(fmri_data);
 
 % Load ROI masks
-mask_vt = niftiread('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/mask4_vt.nii.gz');
-mask_face = niftiread('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/mask8_face_vt.nii.gz');
-mask_house = niftiread('/Users/lodysun/Desktop/25SS/3rd period/MDMB/Project/Project1/subj1/mask8_house_vt.nii.gz');
+mask_vt = niftiread('path_mask4_vt.nii.gz');
+mask_face = niftiread('path_mask8_face_vt.nii.gz');
+mask_house = niftiread('path_mask8_house_vt.nii.gz');
 
 % Convert masks to double and extract voxel indices
 mask_vt_voxels = find(double(mask_vt(:)) > 0);
